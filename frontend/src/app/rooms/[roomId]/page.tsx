@@ -1,5 +1,5 @@
 import { Chat } from '@/components/Chat';
 
-export default function HomePage() {
+export default function RoomPage() {
   return <Chat />;
 }

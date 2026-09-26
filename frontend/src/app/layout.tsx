@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { ReactQueryProvider } from '@/lib/react-query'
-import './globals.css'
+import './globals.scss'
 import styles from './layout.module.scss'
 
 export const metadata: Metadata = {
