@@ -2,26 +2,25 @@ import { getMessages, getRoomMessages } from "@/services/messageApi"
 import { Message } from "@/types/Message"
 import { useCallback, useEffect, useState } from "react"
 
-export const useMessages = (roomId?: string) => {
+export const useMessages = (roomId?: string, enabled = true) => {
   const [messages, setMessages] = useState<Message[]>([])
 
   const loadMessages = useCallback(async () => {
     setMessages([]);
     
-    if (roomId) {
-    const loadedMessages = await getRoomMessages(roomId);
-
-    setMessages(loadedMessages);
-  } else {
-    const loadedMessages = await getMessages();
-
-    setMessages(loadedMessages);
-  }
+    try {
+      const loaded = roomId ? await getRoomMessages(roomId) : await getMessages();
+      setMessages(loaded);
+    } catch (err) {
+      console.error('Failed to load messages', err);
+    }
   }, [roomId])
 
   useEffect(() => {
-    loadMessages()
-  }, [loadMessages])
+    if (enabled) {
+      loadMessages();
+    }
+  }, [enabled, loadMessages]);
 
   const saveData = useCallback((message: Message) => {
   setMessages((prev) => {

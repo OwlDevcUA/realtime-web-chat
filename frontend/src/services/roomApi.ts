@@ -1,12 +1,12 @@
-import { api } from "./axios";
+import { api } from "./api";
 
 export async function getRooms() {
   const response = await api.get('/rooms')
   return response.data;
 }
 
-export async function createRoom(name: string, userId: string) {
-  const response = await api.post('/rooms', { name, userId })
+export async function createRoom(name: string) {
+  const response = await api.post('/rooms', { name })
   return response.data;
 }
 

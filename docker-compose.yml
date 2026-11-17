@@ -1,71 +1,72 @@
 services:
-  mate-db:
+  chat-db:
     image: postgres:16-alpine
-    container_name: mate-db
+    container_name: chat_postgres
     environment:
-      POSTGRES_USER: ${DB_USER:-mate_user}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-mate_password}
-      POSTGRES_DB: ${DB_NAME:-mate_db}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
     ports:
       - "${DB_PORT:-5432}:5432"
     volumes:
-      - mate-db-data:/var/lib/postgresql/data
+      - chat-db-data:/var/lib/postgresql/data
     networks:
-      - mate-network
+      - chat-network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-mate_user} -d ${DB_NAME:-mate_db}"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  mate-backend:
+  chat-backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: mate-backend
+    container_name: chat_backend
     ports:
-      - "${BACKEND_PORT:-4000}:4000"
+      - "${BACKEND_PORT}:5000"
     environment:
-      NODE_ENV: ${NODE_ENV:-development}
-      DB_HOST: mate-db
+      NODE_ENV: ${NODE_ENV}
+      DB_HOST: chat-db
       DB_PORT: 5432
-      DB_USER: ${DB_USER:-mate_user}
-      DB_PASSWORD: ${DB_PASSWORD:-mate_password}
-      DB_NAME: ${DB_NAME:-mate_db}
-      PORT: 4000
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      PORT: 5000
     volumes:
       - ./backend:/app
       - /app/node_modules
     depends_on:
-      mate-db:
+      chat-db:
         condition: service_healthy
     networks:
-      - mate-network
-    command: npm run start:dev
+      - chat-network
+    command: npm run start
 
-  mate-frontend:
+  chat-frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: mate-frontend
+    container_name: chat_frontend
     ports:
-      - "${FRONTEND_PORT:-3000}:3000"
+      - "${FRONTEND_PORT}:3000"
     environment:
-      NODE_ENV: ${NODE_ENV:-development}
-      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:4000}
+      NODE_ENV: ${NODE_ENV}
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+      WATCHPACK_POLLING: 'true' 
     volumes:
       - ./frontend:/app
       - /app/node_modules
       - /app/.next
     depends_on:
-      - mate-backend
+      - chat-backend
     networks:
-      - mate-network
+      - chat-network
     command: npm run dev
 
 networks:
-  mate-network:
+  chat-network:
     driver: bridge
 
 volumes:
-  mate-db-data:
+  chat-db-data:

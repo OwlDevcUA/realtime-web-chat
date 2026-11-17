@@ -1,0 +1,59 @@
+.settings {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100vh;
+  align-items: center;
+  margin: 20px;
+
+  &__backBtn {
+    position: relative;
+    top: -400px;
+    margin-right: auto;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  &__profileInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  &__profileField {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__editBtn {
+    padding-inline: 5px;
+    background-color: #5542f6;
+    font-size: 1rem;
+    font-weight: 700;
+    color: white;
+    border: none;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #8072fd;
+    }
+  }
+
+  &__editPasswordBtn {
+    padding: 10px;
+    background-color: #5542f6;
+    font-size: 1rem;
+    font-weight: 700;
+    color: white;
+    border: none;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #8072fd;
+    }
+  }
+}

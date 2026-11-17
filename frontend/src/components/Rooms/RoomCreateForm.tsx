@@ -1,31 +1,37 @@
 'use client';
 
 import React, { useState } from "react"
-import { createRoom } from "@/services/roomApi";
-import type { Room } from "@/types/Room";
-import { useRooms } from "@/hooks/useRooms";
+import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
+import { addRoom } from "@/features/room/rooms";
+import { useRouter } from "next/navigation";
 
 type Props = {
-  userId: string;
-  onSet: (room: Room) => void;
-  onClose: (isOpen: boolean) => void;
-}
+  onClose: (state: boolean) => void;
+};
 
-export const RoomCreateForm: React.FC<Props> = ({ userId, onSet, onClose }) => {
+export const RoomCreateForm: React.FC<Props> = ({ onClose }) => {
+  const router = useRouter();
   const [name, setName] = useState('');
-  const { loadRooms } = useRooms();
+
+  const dispatch = useAppDispatch();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!name.trim()) {
-      return;
-    }
+    const trimmed = name.trim();
 
-    const room = await createRoom(name, userId);
-    onSet(room);
+    if (!trimmed) {
+    return;
+  }
+
+    try {
+    const room = await dispatch(addRoom({ name: trimmed })).unwrap();
+
     onClose(false);
-    loadRooms()
+    router.push(`/rooms/${room.id}`);
+  } catch (err) {
+    console.error('Failed to create room', err); 
+  }
   }
 
   return (

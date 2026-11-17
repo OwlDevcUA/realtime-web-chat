@@ -7,18 +7,26 @@
   flex-direction: column;
   list-style: none;
 
-  &::before {
-    content: "Chat Web";
+  &__banner {
     display: flex;
     align-items: center;
     justify-content: space-between;
     height: 60px;
     padding: 0 20px;
     background-color: #5542f6;
+    flex-shrink: 0;
+  }
+
+  &__bannerSettingsBtn img {
+      height: 30px;
+      width: 30px;
+  }
+
+  &__bannerGlobalBtn {
     color: #ffffff;
     font-size: 1.25rem;
     font-weight: 700;
-    flex-shrink: 0;
+    text-decoration: none;
   }
 
   &__createBtn {

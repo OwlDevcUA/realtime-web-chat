@@ -1,4 +1,4 @@
-import { api } from "./axios";
+import { api } from "./api";
 
 export async function getMessages() {
   const response = await api.get('/chat')
@@ -10,17 +10,15 @@ export async function getRoomMessages(roomId: string) {
   return response.data;
 }
 
-export async function postMessage(username: string, text: string, userId: string) {
-  const response = await api.post('/chat', { username, text, userId })
+export async function postMessage(text: string) {
+  const response = await api.post('/chat', { text })
   return response.data;
 }
 
 export async function postRoomMessage(
-  username: string,
    text: string,
    roomId: string,
-   userId: string
 ) {
-  const response = await api.post(`/rooms/${roomId}`, { username, text, userId })
+  const response = await api.post(`/rooms/${roomId}`, { text })
   return response.data;
 }
