@@ -8,9 +8,7 @@ import { User } from 'src/modules/User.js';
 
 async function nameChange(req, res, next) {
   const { newName } = req.body;
-  const email = req.user.email;
-  
-  const user = await userService.getByEmail(email);
+  const user = await User.findByPk(req.user.id);
 
   if (!user) {
     throw ApiError.BadRequest('User does not exist', {});
@@ -23,33 +21,33 @@ async function nameChange(req, res, next) {
 
 async function passwordChange(req, res, next) {
   const { password, oldPassword } = req.body;
-  const email = req.user.email;
-
-  const user = await userService.getByEmail(email);
-  const isMatched = await bcrypt.compare(password, user.password);
-  const accept = await bcrypt.compare(oldPassword, user.password);
+  const user = await User.findByPk(req.user.id);
 
   if (!user) {
     throw ApiError.BadRequest('User does not exist', {});
   }
 
+  const isMatched = await bcrypt.compare(password, user.password);
+  const accept = await bcrypt.compare(oldPassword, user.password);
+
+
   if (isMatched) {
     throw ApiError.BadRequest('You need to create new password', {});
   }
 
-  if (accept) {
+  if (!accept) {
     throw ApiError.BadRequest('Wrong password', {});
   }
 
   await userService.resetPassword(user, password);
 
-  res.send({ message: 'OK' });
+  return res.send({ user: userService.normalize(user) });
 }
 
 async function requestEmailChange(req, res, next) {
   const { password, newEmail } = req.body;
 
-  const user = await userService.getByEmail(req.user.email);
+  const user = await User.findByPk(req.user.id);
 
   if (!user) {
     throw ApiError.Unauthorized();
@@ -106,7 +104,7 @@ async function confirmEmailChange(req, res) {
 
   await userService.emailChange(user, data.newEmail)
 
-  res.send({ message: 'OK' });
+  res.send({ user: userService.normalize(user)});
 }
 
 export const profileController = {

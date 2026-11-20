@@ -115,7 +115,7 @@ async function refresh(req, res, next) {
     throw ApiError.Unauthorized();
   }
 
-  const user = await userService.getByEmail((userData as any).email);
+  const user = await User.findByPk((userData as any).id);
 
   await sendAuthentication(res, user);
 }

@@ -70,6 +70,8 @@ async function resetPassword(user, newPassword) {
   });
 
   await user.save();
+
+  return user;
 }
 
 async function nameChange(user, name) {
