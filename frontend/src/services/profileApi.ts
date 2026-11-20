@@ -6,14 +6,14 @@ export async function changeName(newName: string) {
   return response.data
 }
 
-export async function changePassword(password: string) {
-  const response = await api.post('/profile/changePassword', { password })
+export async function changePassword(password: string, oldPassword: string) {
+  const response = await api.post('/profile/changePassword', { password, oldPassword })
   
   return response.data
 }
 
 export async function changeEmail(password: string, newEmail: string) {
-  const response = await api.post('/profile/changePassword', { password, newEmail })
+  const response = await api.post('/profile/changeEmail', { password, newEmail })
   
   return response.data
 }

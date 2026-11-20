@@ -1,12 +1,14 @@
 'use client';
 
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import './SettingsPage.scss';
 import { changeName } from "@/services/profileApi";
 import Link from "next/link";
 import { setUser } from "@/features/user/user";
+import { toast } from "sonner";
+import { logout } from "@/services/authApi";
 
 export const SettingsPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -34,6 +36,18 @@ export const SettingsPage: React.FC = () => {
       throw err
     } finally {
       setActive(false);
+      toast.success("Your username has been changed", { position: "top-center" })
+    }
+  }
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      dispatch(setUser(null))
+    } catch (err) {
+      throw err
+    } finally {
+      redirect('/login')
     }
   }
 
@@ -77,7 +91,7 @@ export const SettingsPage: React.FC = () => {
           <div className="settings__profileField">
           <h3 className="settings__profileCardText">Email: {user?.email}</h3>
            <Link
-              href={'/changeEmail'}
+              href={'/settings/changeEmail'}
               className="settings__editBtn">
               Edit
           </Link>
@@ -85,13 +99,15 @@ export const SettingsPage: React.FC = () => {
           <div className="settings__profileField">
                
           <Link
-            href={'/changePassword'}
+            href={'/settings/changePassword'}
             className="settings__editPasswordBtn">
             Change Password
           </Link>
           </div>
         </div>
       </div>
+
+      <button onClick={handleLogout} className="settings__logoutBtn">Logout</button>
     </div>
   )
 }

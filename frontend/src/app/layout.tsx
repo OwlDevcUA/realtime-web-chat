@@ -4,6 +4,8 @@ import './globals.scss'
 import styles from './layout.module.scss'
 import StoreProvider from '@/providers/StoreProvider'
 import { AuthProvider } from '@/providers/AuthProvider'
+import { Toaster } from 'sonner'
+
 
 export const metadata: Metadata = {
   title: 'Chat-App',
@@ -22,6 +24,7 @@ export default function RootLayout({
         <StoreProvider>
           <AuthProvider>
             <ReactQueryProvider>{children}</ReactQueryProvider>
+            <Toaster />
           </AuthProvider>
         </StoreProvider >
         

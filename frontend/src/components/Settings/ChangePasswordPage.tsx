@@ -1,9 +1,17 @@
 'use client';
 
 import { useState } from "react";
+import './ChangeMenu.scss';
+import { redirect, useRouter } from "next/navigation";
+import { changePassword } from "@/services/profileApi";
+import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
+import { setUser } from "@/features/user/user";
+import { toast } from "sonner";
 
 
 export const ChangePasswordPage: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const router = useRouter();
   
   const [values, setValues] = useState({
       oldPass: '',
@@ -14,12 +22,40 @@ export const ChangePasswordPage: React.FC = () => {
    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setValues((prev) => ({ ...prev, [e.target.name]: e.target.value }));
    };
+  
+  const handleSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+    
+    const validateInputs = values.oldPass || values.newPass || values.confirmPass;
+  
+      if (!validateInputs) {
+        return;
+      }
+  
+      try {
+        const data = await changePassword(values.newPass, values.oldPass);
+
+        if (data?.user) {
+          dispatch(setUser(data.user))
+        }
+      } catch (err) {
+        throw err
+      } finally {
+        setValues({
+          oldPass: '',
+          newPass: '',
+          confirmPass: '',
+        });
+        toast.success("Your password has been changed", { position: "top-center" })
+        redirect('/settings')
+      }
+    }
 
   
   return (
-    <form className="changeMenu">
+    <form className="changeMenu" onSubmit={handleSubmit}>
 
-          <a>Close</a>
+          <a className="settings__backBtn" onClick={() => router.back()}>Back to settings</a>
 
           Old Password:
         <input 
@@ -35,7 +71,7 @@ export const ChangePasswordPage: React.FC = () => {
         <input 
           className="changeMenu__input"
           type="text"
-          name='new'
+          name='newPass'
           value={values.newPass}
           onChange={(e) => handleChange(e)}
           required

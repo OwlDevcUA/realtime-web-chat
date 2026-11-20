@@ -11,7 +11,7 @@ import { useParams } from "next/navigation";
 import { useMessages } from "@/hooks/useMessages";
 import { useAppSelector } from "@/hooks/hooks";
 import { DataLoader } from "../DataLoader/DataLoader";
-import { RegisterForm } from "../Auth/RegisterForm";
+
 
 
 export const Chat = () => {
@@ -26,12 +26,6 @@ export const Chat = () => {
 
   return (
     <div className="chat">
-      {!user ? (
-    <div className="modal-overlay">
-      <RegisterForm />
-    </div>
-  ) : (
-      <>
       <DataLoader onData={saveData} roomId={roomId} />
       {roomCreateIsOpen && (
         <RoomCreateForm
@@ -50,8 +44,6 @@ export const Chat = () => {
           onSet={saveData}
         />
       </div>
-    </>
-      )}
     </div>
   )
 }
